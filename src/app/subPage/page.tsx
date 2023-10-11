@@ -10,27 +10,33 @@ interface todoType {
 
 const TodoApp = () => {
   const [todoList, setTodoList] = useState<todoType[]>([]);
-  const [todo, setTodo] = useState<string>('')
+  const [todo, setTodo] = useState<string>('');
+  const [checked, setChecked] = useState<boolean>(false);
 
   const addTodo = useCallback(() => {
 
     const newTodo : todoType = {
       id: uuid(),
       content: todo,
-      checked:false,
+      checked:checked,
     };
-
-    setTodoList((prev => [...prev, newTodo])) 
-  },[todo]);
+    setTodoList(prev => [...prev, newTodo]);
+    setTodo('');
+  },[todo,checked]);
 
   const deleteTodo = useCallback((id: string) => {
-    console.log('삭제')
-    setTodoList((prev) => prev.filter((todo) => todo.id ! == id));
-  },[]);
+    setTodoList((prev) => prev.filter((todo) => todo.id !== id))
+  },[todoList]);
 
-  useEffect(() => {
+  const checkTodo = useCallback((id: string) => {
+    todoList.forEach((todo) => {
+      console.log(todoList)
+      if(todo.id === id) {
+        todo.checked = todo.checked === false ? true : false
+      }
+    })
+  },[checked])
 
-  },[todoList])
   return (
     <>
     <div>
@@ -46,12 +52,17 @@ const TodoApp = () => {
 
     <ul>
       {todoList.map((todo) =>(
-        <li key={todo.id}>
+        <li key={todo.id}
+        >
           <input
           type="checkbox"
-          checked={todo.checked}
-          />
-          {todo.content}
+          defaultChecked={todo.checked}
+          onClick={() => {checkTodo(todo.id)}}/>
+
+          <p className={todo.checked ? 'line-through' : 'underline'}>
+            {todo.content}
+            </p>
+
           <button onClick={() => deleteTodo(todo.id)}>삭제하기</button>
         </li>
       ))}
