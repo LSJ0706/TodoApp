@@ -11,31 +11,31 @@ interface todoType {
 const TodoApp = () => {
   const [todoList, setTodoList] = useState<todoType[]>([]);
   const [todo, setTodo] = useState<string>('');
-  const [checked, setChecked] = useState<boolean>(false);
 
   const addTodo = useCallback(() => {
 
     const newTodo : todoType = {
       id: uuid(),
       content: todo,
-      checked:checked,
+      checked:false,
     };
     setTodoList(prev => [...prev, newTodo]);
     setTodo('');
-  },[todo,checked]);
+  },[todo]);
 
   const deleteTodo = useCallback((id: string) => {
     setTodoList((prev) => prev.filter((todo) => todo.id !== id))
-  },[todoList]);
+  },[]);
 
   const checkTodo = useCallback((id: string) => {
-    todoList.forEach((todo) => {
-      console.log(todoList)
-      if(todo.id === id) {
-        todo.checked = todo.checked === false ? true : false
-      }
-    })
-  },[checked])
+    const copy = [...todoList]
+    const copyIndex = copy.findIndex((todo) => todo.id === id);
+    if(copyIndex === -1) {
+      return;
+    }
+    copy[copyIndex].checked = !copy[copyIndex].checked
+    setTodoList(copy)
+  },[todoList])
 
   return (
     <>
@@ -57,7 +57,7 @@ const TodoApp = () => {
           <input
           type="checkbox"
           defaultChecked={todo.checked}
-          onClick={() => {checkTodo(todo.id)}}/>
+          onChange={() => {checkTodo(todo.id)}}/>
 
           <p className={todo.checked ? 'line-through' : 'underline'}>
             {todo.content}
