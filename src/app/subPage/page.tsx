@@ -9,16 +9,22 @@ interface todoType {
 }
 
 const TodoApp = () => {
-  const [todoList, setTodoList] = useState<todoType[]>([]);
+  const [todoList, setTodoList] = useState<todoType[]>(()=> {
+    var LocalTodoList;    
+    if (typeof window !== 'undefined') {
+    LocalTodoList = localStorage.getItem('todoList')
+    }
+    return LocalTodoList ? JSON.parse(LocalTodoList) : []
+  });
   const [todo, setTodo] = useState<string>('');
 
   const addTodo = useCallback(() => {
-
     const newTodo : todoType = {
       id: uuid(),
       content: todo,
       checked:false,
     };
+    
     setTodoList(prev => [...prev, newTodo]);
     setTodo('');
   },[todo]);
@@ -37,6 +43,13 @@ const TodoApp = () => {
     setTodoList(copy)
   },[todoList])
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('todoList', JSON.stringify(todoList))
+    }
+  }, [todoList]);
+  
+
   return (
     <>
     <div>
@@ -51,7 +64,7 @@ const TodoApp = () => {
     </div>
 
     <ul>
-      {todoList.map((todo) =>(
+      {todoList.map((todo : any) =>(
         <li key={todo.id}
         >
           <input
