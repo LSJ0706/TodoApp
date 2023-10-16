@@ -1,25 +1,20 @@
 'use client'
 import uuid from 'react-uuid'
 import { useCallback, useEffect, useState } from "react";
+import {TodoListType} from '../types/todoListType'
 
-interface todoType {
-  id : string;
-  content : string;
-  checked : boolean;
-}
 
 const TodoApp = () => {
-  const [todoList, setTodoList] = useState<todoType[]>(()=> {
-    var LocalTodoList;    
+  const [todoList, setTodoList] = useState<TodoListType[]>(()=> {
     if (typeof window !== 'undefined') {
-    LocalTodoList = localStorage.getItem('todoList')
-    }
+    const LocalTodoList = localStorage.getItem('todoList')
     return LocalTodoList ? JSON.parse(LocalTodoList) : []
+    }
   });
   const [todo, setTodo] = useState<string>('');
 
   const addTodo = useCallback(() => {
-    const newTodo : todoType = {
+    const newTodo : TodoListType = {
       id: uuid(),
       content: todo,
       checked:false,
@@ -45,10 +40,9 @@ const TodoApp = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('todoList', JSON.stringify(todoList))
+      localStorage.setItem('todoList', JSON.stringify(todoList));
     }
   }, [todoList]);
-  
 
   return (
     <>
@@ -69,7 +63,7 @@ const TodoApp = () => {
         >
           <input
           type="checkbox"
-          defaultChecked={todo.checked}
+          checked={todo.checked}
           onChange={() => {checkTodo(todo.id)}}/>
 
           <p className={todo.checked ? 'line-through' : 'underline'}>
