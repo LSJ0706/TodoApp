@@ -1,84 +1,51 @@
-'use client'
-import {TodoListType} from './types/todoListType'
-import uuid from 'react-uuid'
+"use client";
+import { TodoListType } from "./types/todoListType";
+import uuid from "react-uuid";
 import { useCallback, useEffect, useState } from "react";
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
+import React from "react";
 
 const TodoApp = () => {
-  const [todoList, setTodoList] = useState<TodoListType[]>(()=> {
-    if (typeof window !== 'undefined') {
-    const LocalTodoList = localStorage.getItem('todoList')
-    console.log(LocalTodoList)
-    return LocalTodoList ? JSON.parse(LocalTodoList) : []
-    }
-  });
-  const [todo, setTodo] = useState<string>('');
+  const [todoList, setTodoList] = useState<TodoListType[]>([]);
+  const [todo, SetTodo] = useState<string>("");
+
+  const list = todoList.map((todo: any) => (
+    <li key={todo.id}>
+      <p>{todo.content}</p>
+      <input
+        type="checkbox"
+        checked={todo.checked}
+        onChange={() => console.log("check")}
+      />
+    </li>
+  ));
 
   const addTodo = useCallback(() => {
-    const newTodo : TodoListType = {
-      id: uuid(),
-      index : 1,
-      content: todo,
-      checked:false,
-    };
-    
-    setTodoList(prev => [...prev, newTodo]);
-    setTodo('');
-  },[todo]);
-
-  const deleteTodo = useCallback((id: string) => {
-    setTodoList((prev) => prev.filter((todo) => todo.id !== id))
-  },[]);
-
-  const checkTodo = useCallback((id: string) => {
-    const copy = [...todoList]
-    const copyIndex = copy.findIndex((todo) => todo.id === id);
-    if(copyIndex === -1) {
-      return;
-    }
-    copy[copyIndex].checked = !copy[copyIndex].checked
-    setTodoList(copy)
-  },[todoList])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('todoList', JSON.stringify(todoList));
-    }
-  }, [todoList]);
+    setTodoList((prevTodo) => {
+      const newTodo: TodoListType = {
+        id: uuid(),
+        index: 1,
+        content: todo,
+        checked: false,
+      };
+      return [...prevTodo, newTodo];
+    });
+    console.log(todoList);
+  }, [todo, todoList]);
 
   return (
     <>
-    <div>
-      <h1>To-Do App</h1>
-      <input
-      type="text"
-      placeholder="To-Do 추가"
-      value={todo}
-      onChange={(e) => setTodo(e.target.value)}
-      />
-      <button onClick={addTodo}>추가하기</button>
-    </div>
-    <ul>
-      {todoList.map((todo : any) =>(
-        <li key={todo.id}
-        >
-          <input
-          type="checkbox"
-          checked={todo.checked}
-          onChange={() => {checkTodo(todo.id)}}/>
-
-          <p className={todo.checked ? 'line-through' : 'font-bold'}>
-            {todo.content}
-            </p>
-
-          <button onClick={() => deleteTodo(todo.id)}>삭제하기</button>
-        </li>
-      ))}
-    </ul>
+      <h2>Todo-App</h2>
+      <div>
+        <input
+          placeholder="To Do 입력"
+          value={todo}
+          onChange={(e) => SetTodo(e.target.value)}
+        />
+        <button onClick={addTodo}>add Todo</button>
+      </div>
+      <ul>{list}</ul>
     </>
-  )
-}
+  );
+};
 
 export default TodoApp;
