@@ -8,17 +8,6 @@ const TodoApp = () => {
   const [todoList, setTodoList] = useState<TodoListType[]>([]);
   const [todo, SetTodo] = useState<string>("");
 
-  const list = todoList.map((todo: any) => (
-    <li key={todo.id}>
-      <p>{todo.content}</p>
-      <input
-        type="checkbox"
-        checked={todo.checked}
-        onChange={() => console.log("check")}
-      />
-    </li>
-  ));
-
   const addTodo = useCallback(() => {
     setTodoList((prevTodo) => {
       const newTodo: TodoListType = {
@@ -29,8 +18,30 @@ const TodoApp = () => {
       };
       return [...prevTodo, newTodo];
     });
+  }, [todo]);
+
+  const deleteTodo = useCallback(
+    (id: string) => {
+      setTodoList(todoList.filter((todo) => todo.id !== id));
+    },
+    [todoList]
+  );
+
+  const list = todoList.map((todo: any) => (
+    <li key={todo.id}>
+      {todo.content}
+      <input
+        type="checkbox"
+        checked={todo.checked}
+        onChange={() => console.log("check")}
+      />
+      <button onClick={() => deleteTodo(todo.id)}>삭제하기</button>
+    </li>
+  ));
+
+  useEffect(() => {
     console.log(todoList);
-  }, [todo, todoList]);
+  }, [todoList]);
 
   return (
     <>
