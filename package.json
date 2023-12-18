@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/react-beautiful-dnd": "^13.1.7",
     "next": "latest",
     "react": "latest",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "latest",
     "react-uuid": "^2.0.0"
   },
