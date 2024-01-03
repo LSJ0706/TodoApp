@@ -67,7 +67,7 @@ const TodoApp = () => {
       </div>
       {/*dnd context 공간*/}
       <DragDropContext onDragEnd={onDragEnd}>
-        {/*drop을 할 conponent*/}
+        {/*drop을 할 component*/}
         <Droppable droppableId="todo">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
